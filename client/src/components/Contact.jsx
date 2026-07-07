@@ -15,7 +15,7 @@ export default function Contact() {
     e.preventDefault();
     setStatus({ state: 'loading', message: '' });
     try {
-      const res = await fetch('/api/contact', {
+      const res = await fetch('https://sharath-portfolio-qn7f.onrender.com/api/contact', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(form)
