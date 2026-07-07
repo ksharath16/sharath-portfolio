@@ -1,9 +1,8 @@
 import express from 'express';
-import nodemailer from 'nodemailer';
+import { Resend } from 'resend';
 
 const router = express.Router();
 
-// Basic server-side validation — never trust the client alone
 function validate({ name, email, message }) {
   if (!name || typeof name !== 'string' || name.trim().length < 2) {
     return 'Please provide your name.';
@@ -26,31 +25,25 @@ router.post('/', async (req, res) => {
 
   const { name, email, message } = req.body;
 
-  // If SMTP isn't configured yet, log instead of failing —
-  // lets you test the form locally before setting up real email sending.
-  if (!process.env.SMTP_HOST || !process.env.SMTP_USER) {
-    console.log('[contact] SMTP not configured. Submission received:', { name, email, message });
-    return res.status(200).json({ ok: true, note: 'Logged locally (SMTP not configured yet).' });
+  if (!process.env.RESEND_API_KEY) {
+    console.log('[contact] RESEND_API_KEY not configured. Submission received:', { name, email, message });
+    return res.status(200).json({ ok: true, note: 'Logged locally (Resend not configured yet).' });
   }
 
   try {
-    const transporter = nodemailer.createTransport({
-      host: process.env.SMTP_HOST,
-      port: Number(process.env.SMTP_PORT) || 587,
-      secure: Number(process.env.SMTP_PORT) === 465,
-      auth: {
-        user: process.env.SMTP_USER,
-        pass: process.env.SMTP_PASS
-      }
-    });
+    const resend = new Resend(process.env.RESEND_API_KEY);
 
-    await transporter.sendMail({
-      from: `"Portfolio Contact Form" <${process.env.SMTP_USER}>`,
-      to: process.env.CONTACT_TO_EMAIL || process.env.SMTP_USER,
+    const { error: resendError } = await resend.emails.send({
+      from: 'Portfolio Contact Form <onboarding@resend.dev>',
+      to: process.env.CONTACT_TO_EMAIL,
       replyTo: email,
       subject: `New portfolio message from ${name}`,
       text: `Name: ${name}\nEmail: ${email}\n\n${message}`
     });
+
+    if (resendError) {
+      throw new Error(resendError.message || 'Resend API error');
+    }
 
     return res.status(200).json({ ok: true });
   } catch (err) {
