@@ -12,6 +12,7 @@ export default function Nav() {
           <a href="#experience">experience</a>
           <a href="#certs">certs</a>
           <a href="#contact">contact</a>
+          <a href="https://sharathkotha.hashnode.dev" target="_blank" rel="noopener noreferrer">Blog</a>
         </div>
       </div>
     </nav>
