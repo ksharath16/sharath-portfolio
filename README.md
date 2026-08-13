@@ -122,3 +122,5 @@ Once live:
 - Add a proper `sitemap.xml` and `robots.txt` to `client/public/`.
 - Set up **GA4** for traffic tracking.
 - Add Open Graph meta tags to `client/index.html` for clean link previews when shared.
+
+<!-- testing CI auto-trigger -->
