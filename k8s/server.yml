@@ -20,11 +20,11 @@ spec:
           image: ghcr.io/ksharath16/sharath-portfolio-server:latest
           ports:
             - containerPort: 4000
-	  resources:
-	    requests:
-	      cpu: "20m"
-	    limits:
-	      cpu: "100m"
+          resources:
+            requests:
+              cpu: "20m"
+            limits:
+              cpu: "100m"
 ---
 apiVersion: v1
 kind: Service
